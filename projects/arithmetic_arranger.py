@@ -2,70 +2,66 @@ def arithmetic_arranger(problems, show_answers=False):
     if len(problems) > 5:
         return 'Error: Too many problems.'
 
-    first_operand = []
-    second_operand = []
-    operator = []
+    operand1 = []
+    operand2 = []
+    signs = []
 
     for problem in problems:
-        pieces = problem.split()
-        first_operand.append(pieces[0])
-        operator.append(pieces[1])
-        second_operand.append(pieces[2])
+        problem_split = problem.split(' ')
 
+        operand1.append(problem_split[0])
+        signs.append(problem_split[1])
+        operand2.append(problem_split[2])
+    
     # Check for * or /
-    if "*" in operator or "/" in operator:
+    if "*" in signs or "/" in signs:
         return "Error: Operator must be '+' or '-'."
 
     # Check the digits
-    for i in range(len(first_operand)):
-        if not (first_operand[i].isdigit() and second_operand[i].isdigit()):
+    for i in range(len(operand1)):
+        if not (operand1[i].isdigit() and operand2[i].isdigit()):
             return "Error: Numbers must only contain digits."
 
     # Check the length
-    for i in range(len(first_operand)):
-        if len(first_operand[i]) > 4 or len(second_operand[i]) > 4:
+    for i in range(len(operand1)):
+        if len(operand1[i]) > 4 or len(operand2[i]) > 4:
             return "Error: Numbers cannot be more than four digits."
+    
+    line1 = []
+    line2 = []
+    line3 = []
+    line4 = []
 
-    first_line = []
-    second_line = []
-    third_line = []
-    fourth_line = []
-
-    for i in range(len(first_operand)):
-        if len(first_operand[i]) > len(second_operand[i]):
-            first_line.append(" "*2 + first_operand[i])
+    for i in range(len(operand1)):
+        if len(operand1[i]) > len(operand2[i]):
+            line1.append(f"{' '* 2}{operand1[i]}")
         else:
-            first_line.append(" "*(len(second_operand[i]) - len(first_operand[i]) + 2) + first_operand[i])
+            line1.append(f"{' ' * (len(operand2[i]) - len(operand1[i]) + 2)}{operand1[i]}")
 
-    for i in range(len(second_operand)):
-        if len(second_operand[i]) > len(first_operand[i]):
-            second_line.append(operator[i] + " " + second_operand[i])
+    for i in range(len(operand2)):
+        if len(operand2[i]) > len(operand1[i]):
+            line2.append(signs[i] + " " + operand2[i])
         else:
-            second_line.append(operator[i] + " "*(len(first_operand[i]) - len(second_operand[i]) + 1) + second_operand[i])
-
-    for i in range(len(first_operand)):
-        third_line.append("-"*(max(len(first_operand[i]), len(second_operand[i])) + 2))
-
+            line2.append(f'{signs[i]}{" "*(len(operand1[i]) - len(operand2[i]) + 1)}{operand2[i]}')
+    
+    for i in range(len(operand1)):
+        line3.append(f'{"-"*(max(len(operand1[i]), len(operand2[i])) + 2)}')
+    
     if show_answers:
-        for i in range(len(first_operand)):
-            if operator[i] == "+":
-                ans = str(int(first_operand[i]) + int(second_operand[i]))
+        for i in range(len(signs)):
+            if signs[i] == "+":
+                ans = str(int(operand1[i]) + int(operand2[i]))
             else:
-                ans = str(int(first_operand[i]) - int(second_operand[i]))
+                ans = str(int(operand1[i]) - int(operand2[i]))
 
-            if len(ans) > max(len(first_operand[i]), len(second_operand[i])):
-                fourth_line.append(" " + ans)
+            if len(ans) > max(len(operand1[i]), len(operand2[i])):
+                line4.append(" " + ans)
             else:
-                fourth_line.append(" "*(max(len(first_operand[i]), len(second_operand[i])) - len(ans) + 2) + ans)
-        arranged_problems = "    ".join(first_line) + "\n" + "    ".join(second_line) + "\n" + "    ".join(third_line) + "\n" + "    ".join(fourth_line)
+                line4.append(" "*(max(len(operand1[i]), len(operand2[i])) - len(ans) + 2) + ans)
+        result = "    ".join(line1) + "\n" + "    ".join(line2) + "\n" + "    ".join(line3) + "\n" + "    ".join(line4)
     else:
-        arranged_problems = "    ".join(first_line) + "\n" + "    ".join(second_line) + "\n" + "    ".join(third_line)
-    return arranged_problems
+        result = "    ".join(line1) + "\n" + "    ".join(line2) + "\n" + "    ".join(line3)
+    
+    return result
 
-    return problems
-
-print(f'\n{arithmetic_arranger(["3801 - 2", "123 + 49"])}')
-
-# '   32\t     1\t  45\t  123\t  988\t\n- 698\t- [96 chars]28\t'
-
-# '   32         1      45      123      988\n- 6[120 chars]1028'
+print(f'\n{arithmetic_arranger(["1 + 2", "1 - 9380"])}')
